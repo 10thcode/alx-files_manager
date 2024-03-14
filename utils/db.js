@@ -8,11 +8,17 @@ class DBClient {
     const uri = `mongodb://${host}:${port}/${database}`;
 
     this.client = new MongoClient(uri, { useUnifiedTopology: true });
-    this.client.connect();
+    this.isConnected = false;
+
+    this.client.connect().then(() => {
+      this.isConnected = true;
+    }).catch(() => {
+      this.isConnected = false;
+    });
   }
 
   isAlive() {
-    return this.client.isConnected();
+    return this.isConnected;
   }
 
   async nbUsers() {
